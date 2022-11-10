@@ -3,9 +3,11 @@ import time
 from datetime import datetime
 
 from db import users as users_db
+from hashing import hash_password, verify_password
 
 
 # TODO 1: Don't store the plain text password.
+
 
 def register(firstname: str, lastname: str, email: str, password: str):
     """This function registers a User.
@@ -19,7 +21,7 @@ def register(firstname: str, lastname: str, email: str, password: str):
         "firstname": firstname,
         "lastname": lastname,
         "email": email,
-        "password": password,
+        "password": hash_password(password),
         "created_at": datetime.now(),
         "last_login": None
     }
@@ -33,16 +35,16 @@ def login(email: str, password: str):
     - password: Password of the user.
     """
 
-    """
-    if user(email, password) is in the users_db:
-        print("ao g yema dalta")
-    else: 
-        print("na g nema")
-    """
+    for user in users_db:
+        if user["email"] == email and verify_password(password, user["password"]):
+            print("Logged In.")
+            break
+    else:
+        print("Invalid email or Password.")
 
 
-register(firstname="kami", lastname="khatak", email="kami@gmail.com", password="123")
+register(firstname="kami", lastname="khatak",
+         email="kami@gmail.com", password="123")
+# print(json.dumps(users_db, indent=4, default=str))
+print(users_db)
 login(email="kami@gmail.com", password="123")
-print(json.dumps(users_db, indent=4, default=str))
-
-time.sleep(20)
